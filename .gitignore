@@ -27,7 +27,6 @@ ENV/
 .ipynb_checkpoints/
 
 # Data and temp files
-data/
 *.sqlite3
 *.db
 *.log
