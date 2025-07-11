@@ -4,8 +4,8 @@
 - [X] Initial Setup: poetry, dependencies, root endpoint
 - [X] Write test for root endpoint (TDD)
 - [X] Implement root endpoint to pass test
+- [X] Add Pydantic models for chat requests/responses (test model validation)
 - [ ] Implement /chat endpoint (start with test for dummy response)
-- [ ] Add Pydantic models for chat requests/responses (test model validation)
 - [ ] Implement /chat logic to pass tests
 - [ ] Refactor, document, and review code
 

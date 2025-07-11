@@ -5,7 +5,6 @@ Base = declarative_base()
 
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
-
     id = Column(Integer, primary_key=True, index=True)
     user_message = Column(String, nullable=False)
     bot_response = Column(String, nullable=False)
