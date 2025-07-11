@@ -5,8 +5,8 @@
 - [X] Write test for root endpoint (TDD)
 - [X] Implement root endpoint to pass test
 - [X] Add Pydantic models for chat requests/responses (test model validation)
-- [ ] Implement /chat endpoint (start with test for dummy response)
-- [ ] Implement /chat logic to pass tests
+- [X] Implement /chat endpoint (start with test for dummy response)
+- [X] Implement /chat logic to pass tests
 - [ ] Refactor, document, and review code
 
 ## 2. Persistence Layer (TDD & Clean Code)
