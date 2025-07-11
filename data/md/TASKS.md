@@ -7,10 +7,10 @@
 - [X] Add Pydantic models for chat requests/responses (test model validation)
 - [X] Implement /chat endpoint (start with test for dummy response)
 - [X] Implement /chat logic to pass tests
-- [ ] Refactor, document, and review code
+- [X] Refactor, document, and review code
 
 ## 2. Persistence Layer (TDD & Clean Code)
-- [ ] Write SQLAlchemy models for chat (chat.py) with test coverage
+- [X] Write SQLAlchemy models for chat (chat.py) with test coverage
 - [ ] Add PostgreSQL service to docker-compose.yml & establish connection (test connection)
 - [ ] Create .env.example and document required variables
 - [ ] Add config.py for settings management (test config loading)

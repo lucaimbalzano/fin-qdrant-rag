@@ -20,6 +20,8 @@ pdfplumber = "^0.10.3"
 apscheduler = "^3.10.4"
 python-dotenv = "^1.0.1"
 pydantic = "^2.6.4"
+asyncpg = "^0.30.0"
+greenlet = "^3.2.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
