@@ -2,9 +2,10 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete
 from datetime import datetime
-from src.features.models.sqlalchemy.chat import ChatMessage
-from src.features.models.pydantic.chat import ChatRequest, ChatResponse
-from src.core.logging.config import get_logger
+from features.models.sqlalchemy.chat import ChatMessage
+from features.models.pydantic.chat import ChatRequest, ChatResponse
+from features.services.rag_service import RAGService
+from core.logging.config import get_logger
 
 logger = get_logger("chat_service")
 
@@ -13,6 +14,7 @@ class ChatService:
     
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
+        self.rag_service = RAGService()
     
     async def create_chat_message(self, user_message: str, bot_response: str, metadata: Optional[dict] = None) -> ChatMessage:
         """
@@ -179,23 +181,33 @@ class ChatService:
             ChatResponse: The bot's response with timestamp
         """
         try:
-            # Generate bot response (currently dummy, will be replaced with RAG logic)
-            bot_response = "This is a dummy response."
+            # Generate intelligent response using RAG service
+            bot_response = await self.rag_service.process_user_message(
+                user_message=request.user_message,
+                user_id=request.user_id if hasattr(request, 'user_id') else None
+            )
             timestamp = datetime.utcnow()
             
             # Save to database
+            memory_summary = await self.rag_service.get_memory_summary()
             chat_message = await self.create_chat_message(
                 user_message=request.user_message,
                 bot_response=bot_response,
-                metadata={"processed_at": timestamp.isoformat()}
+                metadata={
+                    "processed_at": timestamp.isoformat(),
+                    "memory_summary": memory_summary
+                }
             )
             
-            logger.info(f"Processed chat request and saved to database with ID: {chat_message.id}")
+            logger.info(f"Processed chat request with RAG and saved to database with ID: {chat_message.id}")
             
             return ChatResponse(
                 bot_response=bot_response,
                 timestamp=timestamp,
-                metadata={"message_id": chat_message.id}
+                metadata={
+                    "message_id": chat_message.id,
+                    "memory_summary": memory_summary
+                }
             )
         except Exception as e:
             logger.error(f"Error processing chat request: {e}")

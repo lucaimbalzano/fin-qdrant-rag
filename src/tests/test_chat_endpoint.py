@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from fastapi import status
 from src.main import app
-from src.features.models.pydantic.chat import ChatRequest, ChatResponse
+from features.models.pydantic.chat import ChatRequest, ChatResponse
 from unittest.mock import patch, AsyncMock
 from datetime import datetime
 
@@ -17,7 +17,7 @@ def make_dummy_response(message_id=1, bot_response="This is a dummy response."):
 @pytest.mark.asyncio
 async def test_chat_endpoint_dummy_response():
     dummy = make_dummy_response()
-    with patch("src.features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
+    with patch("features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
         payload = ChatRequest(user_message="Hello, bot!").model_dump()
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post("/chat", json=payload)
@@ -31,7 +31,7 @@ async def test_chat_endpoint_dummy_response():
 @pytest.mark.asyncio
 async def test_chat_endpoint_response_structure():
     dummy = make_dummy_response()
-    with patch("src.features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
+    with patch("features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
         payload = ChatRequest(user_message="Test message").model_dump()
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post("/chat", json=payload)
@@ -55,7 +55,7 @@ async def test_chat_endpoint_different_messages():
         "Can you help me with trading?",
         ""
     ]
-    with patch("src.features.services.chat_service.ChatService.process_chat_request") as mock_proc:
+    with patch("features.services.chat_service.ChatService.process_chat_request") as mock_proc:
         mock_proc.side_effect = [make_dummy_response(message_id=i+1) for i in range(len(test_messages))]
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             for i, message in enumerate(test_messages):
@@ -70,7 +70,7 @@ async def test_chat_endpoint_different_messages():
 @pytest.mark.asyncio
 async def test_chat_endpoint_invalid_request():
     dummy = make_dummy_response()
-    with patch("src.features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
+    with patch("features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             # Test missing user_message
             response = await ac.post("/chat", json={})
@@ -85,7 +85,7 @@ async def test_chat_endpoint_invalid_request():
 @pytest.mark.asyncio
 async def test_chat_endpoint_timestamp_format():
     dummy = make_dummy_response()
-    with patch("src.features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
+    with patch("features.services.chat_service.ChatService.process_chat_request", new=AsyncMock(return_value=dummy)):
         payload = ChatRequest(user_message="Test timestamp").model_dump()
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             response = await ac.post("/chat", json=payload)
@@ -101,7 +101,7 @@ async def test_chat_endpoint_timestamp_format():
 
 @pytest.mark.asyncio
 async def test_chat_endpoint_message_id_increment():
-    with patch("src.features.services.chat_service.ChatService.process_chat_request") as mock_proc:
+    with patch("features.services.chat_service.ChatService.process_chat_request") as mock_proc:
         mock_proc.side_effect = [make_dummy_response(message_id=i+10) for i in range(3)]
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
             message_ids = []

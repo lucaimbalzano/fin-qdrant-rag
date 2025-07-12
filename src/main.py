@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from src.features.endpoints.chat import router as chat_router
-from src.database.pg_connection import engine
+from features.endpoints.chat import router as chat_router
+from database.pg_connection import engine
 from sqlalchemy import text, inspect
-from src.features.models.sqlalchemy.chat import Base
+from features.models.sqlalchemy.chat import Base
 import logging
 
 # Setup logging

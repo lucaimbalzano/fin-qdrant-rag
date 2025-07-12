@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from datetime import datetime
-from src.features.models.pydantic.chat import ChatRequest, ChatResponse
-from src.features.services.chat_service import ChatService
-from src.database.pg_connection import get_async_session
+from features.models.pydantic.chat import ChatRequest, ChatResponse
+from features.services.chat_service import ChatService
+from database.pg_connection import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
