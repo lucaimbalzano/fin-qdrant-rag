@@ -1,5 +1,5 @@
 import pytest
-from features.models.pydantic.chat import ChatRequest, ChatResponse
+from src.features.models.pydantic.chat import ChatRequest, ChatResponse
 from datetime import datetime
 
 # Test valid ChatRequest

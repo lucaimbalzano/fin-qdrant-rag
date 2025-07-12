@@ -27,7 +27,10 @@ services:
       - db
     ports:
       - "8000:8000"
-    command: ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"]
+    volumes:
+      - ../src:/app/src  # Mount source code for hot reloading
+    #command: ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"] 
+    command: ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src", "--reload"] # dev
 
 volumes:
   postgres_data:

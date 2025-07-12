@@ -74,6 +74,13 @@ check internal logs
 docker exec fqr_proj_api cat logs/api.log
 docker exec fqr_proj_api cat logs/database.log
 docker exec fqr_proj_api cat logs/app.log
+
+check tables
+docker exec -it fqr_proj_postgresdb psql -U $POSTGRES_USER -d $POSTGRES_DB -c '\dt'
+check chat_messages
+docker exec -it fqr_proj_postgresdb psql -U postgres -d fqr_db -c 'SELECT * FROM chat_messages;'
+
+            
 ```
 
 

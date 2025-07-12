@@ -11,11 +11,12 @@
 
 ## 2. Persistence Layer (TDD & Clean Code)
 - [X] Write SQLAlchemy models for chat (chat.py) with test coverage
-- [ ] Add PostgreSQL service to docker-compose.yml & establish connection (test connection)
-- [ ] Create .env.example and document required variables
-- [ ] Add config.py for settings management (test config loading)
-- [ ] Write tests for chat message persistence (CRUD)
-- [ ] Implement persistence logic to pass tests
+- [X] Add logs
+- [X] Add PostgreSQL service to docker-compose.yml & establish connection (test connection)
+- [X] Create .env.example and document required variables
+- [X] Write tests for chat message persistence (CRUD)
+- [X] Implement persistence logic to pass tests
+- [ ] Add OpenAi response with Short Memory & Long Memory
 - [ ] Refactor, document, and review code
 
 ## 3. RAG Pipeline (PDF Ingestion, TDD)
@@ -49,6 +50,7 @@
 - [ ] Write Dockerfile for API & ingestion pipeline (test build/run)
 - [ ] Write docker-compose.yml for API, ingestion, Qdrant, PostgreSQL (test integration)
 - [ ] Add tests for Dockerized setup (health checks, integration)
+- [ ] Add config.py for settings management (test config loading)
 - [ ] Refactor, document, and review code
 
 ## 7. Engineering Best Practices

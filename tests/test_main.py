@@ -1,7 +1,7 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from fastapi import status
-from main import app
+from src.main import app
 
 @pytest.mark.asyncio
 async def test_root_endpoint():
