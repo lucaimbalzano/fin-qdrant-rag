@@ -64,6 +64,9 @@ poetry install
 poetry run uvicorn app.main:app --reload --app-dir src
 ```
 
+### 4. Docker
+  docker compose -f docker/docker-compose.yml up
+
 Visit [http://localhost:8000](http://localhost:8000) to check the root endpoint.
 
 ---
