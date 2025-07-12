@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from datetime import datetime
-from app.features.models.pydantic.chat import ChatRequest, ChatResponse
+from features.models.pydantic.chat import ChatRequest, ChatResponse
 
 router = APIRouter()
 

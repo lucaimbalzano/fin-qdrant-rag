@@ -1,8 +1,8 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from fastapi import status
-from app.main import app
-from app.features.models.pydantic.chat import ChatRequest
+from main import app
+from features.models.pydantic.chat import ChatRequest
 
 # This test checks that the /chat endpoint returns a dummy response as expected.
 # It uses httpx.AsyncClient to simulate an HTTP request to the FastAPI app in an async context.

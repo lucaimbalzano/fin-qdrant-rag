@@ -19,12 +19,16 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --only main
 
+# Create logs directory
+RUN mkdir -p logs
+
 # Copy the rest of the app
 COPY src ./src
 COPY .env.example ./
+COPY .env ./
 
 # Expose port
 EXPOSE 8000
 
 # Default command
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--app-dir", "src"]

@@ -64,8 +64,23 @@ poetry install
 poetry run uvicorn app.main:app --reload --app-dir src
 ```
 
-### 4. Docker
-  docker compose -f docker/docker-compose.yml up
+### 5. Docker
+```
+build docker-compose and run it
+  docker compose -f docker/docker-compose.yml up --build
+
+
+check internal logs
+docker exec fqr_proj_api cat logs/api.log
+docker exec fqr_proj_api cat logs/database.log
+docker exec fqr_proj_api cat logs/app.log
+```
+
+
+### 6. Run tests
+```sh
+poetry run pytest
+```
 
 Visit [http://localhost:8000](http://localhost:8000) to check the root endpoint.
 
