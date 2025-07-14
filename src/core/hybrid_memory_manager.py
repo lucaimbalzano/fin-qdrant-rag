@@ -18,7 +18,7 @@ class HybridMemoryManager:
     
     def __init__(self):
         self.redis_memory = RedisMemoryManager()
-        self.qdrant_memory = QdrantMemoryClient()
+        self.qdrant_memory = QdrantMemoryClient.for_conversations()
         self.openai_client = OpenAIClient()
         
         logger.info("Hybrid memory manager initialized")

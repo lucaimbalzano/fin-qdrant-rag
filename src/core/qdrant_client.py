@@ -12,14 +12,22 @@ logger = get_logger("qdrant_client")
 class QdrantMemoryClient:
     """Qdrant client for long-term memory storage with vector embeddings."""
     
-    def __init__(self, qdrant_url: str = None, collection_name: str = None):
-        # Use environment variables with fallbacks
+    def __init__(self, collection_name: str, qdrant_url: str = None):
+        if not collection_name:
+            raise ValueError("collection_name must be provided explicitly.")
         self.qdrant_url = qdrant_url or os.getenv("QDRANT_URL", "http://localhost:6333")
-        self.collection_name = collection_name or os.getenv("QDRANT_COLLECTION_NAME", "long_term_memory")
+        self.collection_name = collection_name
         self.client = None
         self.vector_size = 1536  # OpenAI ada-002 embedding size
-        
         logger.info(f"Qdrant client initialized for collection: {self.collection_name}")
+
+    @classmethod
+    def for_pdfs(cls, qdrant_url: str = None):
+        return cls(collection_name="pdf_documents", qdrant_url=qdrant_url)
+
+    @classmethod
+    def for_conversations(cls, qdrant_url: str = None):
+        return cls(collection_name="conversations", qdrant_url=qdrant_url)
     
     async def connect(self):
         """Initialize Qdrant client connection."""

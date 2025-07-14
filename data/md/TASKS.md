@@ -22,11 +22,11 @@
 - [X] Refactor, document, and review code
 
 ## 3. RAG Pipeline (PDF Ingestion, TDD)
-- [ ] Write test for PDF upload endpoint (/upload)
-- [ ] Implement /upload endpoint to pass test
-- [ ] Write tests for PDF parsing and chunking (core/pdf_parser.py)
+- [X] Write test for PDF upload endpoint (/upload)
+- [X] Implement /upload endpoint to pass test
+- [ ] Write tests for PDF parsing and chunking (core/utils/parser.py)
 - [ ] Implement parsing/chunking logic to pass tests
-- [ ] Write tests for embedding with OpenAI (core/embedding.py)
+- [ ] Write tests for embedding with OpenAI (core/utils/embedding.py)
 - [ ] Implement embedding logic to pass tests
 - [ ] Write tests for storing embeddings in Qdrant (core/qdrant_client.py)
 - [ ] Implement Qdrant storage logic to pass tests

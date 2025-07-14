@@ -59,13 +59,14 @@ async def check_qdrant_connection():
     try:
         from core.qdrant_client import QdrantMemoryClient
         
-        # Initialize Qdrant client
-        qdrant_client = QdrantMemoryClient()
-        await qdrant_client.connect()
-        
-        # Create collection if it doesn't exist
-        await qdrant_client.create_collection()
-        logger.info("✅ Qdrant connection validated and collection ready")
+        # Initialize both Qdrant collections
+        pdf_qdrant = QdrantMemoryClient.for_pdfs()
+        convo_qdrant = QdrantMemoryClient.for_conversations()
+        await pdf_qdrant.connect()
+        await pdf_qdrant.create_collection()
+        await convo_qdrant.connect()
+        await convo_qdrant.create_collection()
+        logger.info("✅ Qdrant collections validated and ready (pdf_documents, conversations)")
         return True
     except Exception as e:
         logger.error(f"❌ Qdrant connection failed: {e}")
@@ -104,7 +105,14 @@ async def lifespan(app):
     yield
     # (Optional) Shutdown logic here
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="fin-qdrant-rag",
+    description="Retrieval-Augmented Generation (RAG) system for finance/trading PDFs",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+    lifespan=lifespan
+)
 app.include_router(chat_router)
 app.include_router(upload_router)
 

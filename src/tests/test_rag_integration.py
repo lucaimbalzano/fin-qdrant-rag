@@ -23,7 +23,7 @@ async def test_process_user_message_with_memory():
         mock_client = AsyncMock()
         mock_client.get_chat_completion = AsyncMock(return_value="I can help you with stock analysis.")
         mock_openai_class.return_value = mock_client
-
+        
         # Mock HybridMemoryManager
         mock_hybrid = AsyncMock()
         mock_hybrid.get_context_for_user = AsyncMock(return_value={
@@ -36,12 +36,12 @@ async def test_process_user_message_with_memory():
             "importance_score": 0.5
         })
         mock_hybrid_class.return_value = mock_hybrid
-
+        
         # Create RAG service with mocked dependencies
         rag_service = RAGService()
         rag_service.openai_client = mock_client
         rag_service.hybrid_memory = mock_hybrid
-
+        
         # Process new message
         response = await rag_service.process_user_message("Tell me more about tech stocks")
         assert response == "I can help you with stock analysis."
@@ -63,10 +63,10 @@ async def test_memory_persistence():
         mock_hybrid = AsyncMock()
         mock_hybrid.get_memory_stats = AsyncMock(return_value=mock_memory_stats)
         mock_hybrid_class.return_value = mock_hybrid
-
+        
         rag_service = RAGService()
         rag_service.hybrid_memory = mock_hybrid
-
+        
         # Check memory summary
         summary = await rag_service.get_memory_summary()
         assert summary["redis"]["active_conversations"] == 2
@@ -80,10 +80,10 @@ async def test_memory_clearing():
         mock_hybrid = AsyncMock()
         mock_hybrid.clear_user_memory = AsyncMock()
         mock_hybrid_class.return_value = mock_hybrid
-
+        
         rag_service = RAGService()
         rag_service.hybrid_memory = mock_hybrid
-
+        
         # Clear user memory
         await rag_service.clear_user_memory("test_user")
         # Verify clear operation was called

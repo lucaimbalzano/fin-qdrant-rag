@@ -24,6 +24,7 @@ asyncpg = "^0.29.0"
 greenlet = "^3.0.3"
 redis = "^5.0.1"
 python-multipart = "^0.0.20"
+pypdf2 = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
