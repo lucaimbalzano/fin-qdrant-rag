@@ -128,33 +128,3 @@ class MemoryManager:
         """Clear long-term memory."""
         self.long_term_memory.clear()
         logger.info("Long-term memory cleared")
-    
-    def save_memory(self, filepath: str) -> None:
-        """Save memory to JSON file."""
-        try:
-            data = {
-                "short_term": [item.to_dict() for item in self.short_term_memory],
-                "long_term": [item.to_dict() for item in self.long_term_memory]
-            }
-            
-            with open(filepath, 'w') as f:
-                json.dump(data, f, indent=2)
-            
-            logger.info(f"Memory saved to {filepath}")
-        except Exception as e:
-            logger.error(f"Error saving memory: {e}")
-            raise
-    
-    def load_memory(self, filepath: str) -> None:
-        """Load memory from JSON file."""
-        try:
-            with open(filepath, 'r') as f:
-                data = json.load(f)
-            
-            self.short_term_memory = [MemoryItem.from_dict(item) for item in data.get("short_term", [])]
-            self.long_term_memory = [MemoryItem.from_dict(item) for item in data.get("long_term", [])]
-            
-            logger.info(f"Memory loaded from {filepath}")
-        except Exception as e:
-            logger.error(f"Error loading memory: {e}")
-            raise 

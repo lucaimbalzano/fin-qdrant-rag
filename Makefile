@@ -22,7 +22,7 @@ down:
 
 # Local development
 run-local:
-	poetry run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+	poetry run uvicorn src.main:app --reload --host ${FASTAPI_HOST:-0.0.0.0} --port ${FASTAPI_PORT:-8000}
 
 # Testing and quality
 test:

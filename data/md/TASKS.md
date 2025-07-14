@@ -16,8 +16,10 @@
 - [X] Create .env.example and document required variables
 - [X] Write tests for chat message persistence (CRUD)
 - [X] Implement persistence logic to pass tests
-- [ ] Add OpenAi response with Short Memory & Long Memory
-- [ ] Refactor, document, and review code
+- [X] Add OpenAI response with Short Memory (Redis) & Long Memory (Qdrant)
+- [X] Implement Hybrid Memory Manager with Strategy Pattern
+- [X] Add Qdrant service to docker-compose.yml
+- [X] Refactor, document, and review code
 
 ## 3. RAG Pipeline (PDF Ingestion, TDD)
 - [ ] Write test for PDF upload endpoint (/upload)

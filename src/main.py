@@ -1,7 +1,11 @@
+import os
+import asyncio
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from features.endpoints.chat import router as chat_router
+from features.endpoints.upload import router as upload_router
 from database.pg_connection import engine
+from database.redis_connection import get_redis_client
 from sqlalchemy import text, inspect
 from features.models.sqlalchemy.chat import Base
 import logging
@@ -9,10 +13,12 @@ import logging
 # Setup logging
 logger = logging.getLogger("startup")
 
-@asynccontextmanager
-async def lifespan(app):
-    """Lifespan context for FastAPI startup and shutdown events."""
-    # Startup logic
+# Get FastAPI configuration from environment
+FASTAPI_HOST = os.getenv("FASTAPI_HOST", "0.0.0.0")
+FASTAPI_PORT = int(os.getenv("FASTAPI_PORT", "8000"))
+
+async def check_database_connection():
+    """Check PostgreSQL connection and create tables if needed."""
     try:
         # Test database connection
         async with engine.connect() as conn:
@@ -31,15 +37,76 @@ async def lifespan(app):
                 # Create tables if they don't exist
                 await conn.run_sync(Base.metadata.create_all)
                 logger.info("✅ Database tables created successfully")
+        return True
     except Exception as e:
         logger.error(f"❌ Database connection failed: {e}")
+        return False
+
+async def check_redis_connection():
+    """Check Redis connection."""
+    try:
+        redis_client = await get_redis_client()
+        # Test Redis connection with a simple ping
+        await redis_client.ping()
+        logger.info("✅ Redis connection validated successfully")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Redis connection failed: {e}")
+        return False
+
+async def check_qdrant_connection():
+    """Check Qdrant connection and create collection if needed."""
+    try:
+        from core.qdrant_client import QdrantMemoryClient
+        
+        # Initialize Qdrant client
+        qdrant_client = QdrantMemoryClient()
+        await qdrant_client.connect()
+        
+        # Create collection if it doesn't exist
+        await qdrant_client.create_collection()
+        logger.info("✅ Qdrant connection validated and collection ready")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Qdrant connection failed: {e}")
+        return False
+
+async def initialize_services():
+    """Initialize all required services."""
+    logger.info("🚀 Initializing services...")
+    
+    # Check database connection
+    db_ok = await check_database_connection()
+    if not db_ok:
+        raise Exception("Database connection failed")
+    
+    # Check Redis connection
+    redis_ok = await check_redis_connection()
+    if not redis_ok:
+        raise Exception("Redis connection failed")
+    
+    # Check Qdrant connection
+    qdrant_ok = await check_qdrant_connection()
+    if not qdrant_ok:
+        raise Exception("Qdrant connection failed")
+    
+    logger.info("✅ All services initialized successfully")
+
+@asynccontextmanager
+async def lifespan(app):
+    """Lifespan context for FastAPI startup and shutdown events."""
+    # Startup logic
+    try:
+        await initialize_services()
+    except Exception as e:
+        logger.error(f"❌ Service initialization failed: {e}")
         raise
     yield
     # (Optional) Shutdown logic here
 
 app = FastAPI(lifespan=lifespan)
-
 app.include_router(chat_router)
+app.include_router(upload_router)
 
 @app.get("/")
 def root():
