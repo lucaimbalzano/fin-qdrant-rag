@@ -28,9 +28,9 @@
 - [X] Implement parsing/chunking logic to pass tests
 - [X] Write tests for embedding with OpenAI (core/utils/embedding.py)
 - [X] Implement embedding logic to pass tests
-- [ ] Write tests for storing embeddings in Qdrant (core/qdrant_client.py)
-- [ ] Implement Qdrant storage logic to pass tests
-- [ ] Refactor, document, and review code
+- [X] Write tests for storing embeddings in Qdrant (core/qdrant_client.py)
+- [X] Implement Qdrant storage logic to pass tests
+- [X] Refactor, document, and review code
 
 ## 4. RAG Chatbot (TDD)
 - [ ] Write test for /chat endpoint using Qdrant retrieval

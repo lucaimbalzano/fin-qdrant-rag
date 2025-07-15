@@ -4,69 +4,92 @@ fin-qdrant-rag/
 │
 ├── src/
 │   ├── core/
-│   │   ├── utils/                        # General utilities
-│   │   │   └── __init__.py
-│   │   ├── qdrant_client.py              # Qdrant client/wrappers ⚠️ (empty)
-│   │   ├── pdf_parser.py                 # PDF parsing utilities ⚠️ (empty)
-│   │   ├── embedding.py                  # OpenAI embedding logic ⚠️ (empty)
-│   │   ├── openai_client.py              # OpenAI API client wrapper ✅
-│   │   ├── redis_memory_manager.py       # Redis memory management ✅
-│   │   ├── memory_manager.py             # Memory management ✅
-│   │   ├── stock_assistant_config.py     # Assistant configuration ✅
+│   │   ├── utils/
+│   │   │   ├── __init__.py
+│   │   │   ├── embedding.py
+│   │   │   └── parser.py
+│   │   ├── qdrant_client.py
+│   │   ├── openai_client.py
+│   │   ├── redis_memory_manager.py
+│   │   ├── memory_manager.py
+│   │   ├── memory_strategy.py
+│   │   ├── hybrid_memory_manager.py
+│   │   ├── stock_assistant_config.py
 │   │   └── logging/
-│   │       └── config.py                 # Logging configuration ✅
+│   │       └── config.py
 │   │
 │   ├── features/
 │   │   ├── endpoints/
-│   │   │   ├── chat.py                   # /chat endpoint logic ✅
-│   │   │   └── upload.py                 # /upload endpoint logic ⚠️ (empty)
+│   │   │   ├── __init__.py
+│   │   │   ├── chat.py
+│   │   │   └── upload.py
 │   │   ├── services/
-│   │   │   ├── chat_service.py           # Chat CRUD operations ✅
-│   │   │   ├── rag_service.py            # RAG orchestration logic ✅
-│   │   │   ├── ingestion_service.py      # Ingestion pipeline logic ⚠️ (empty)
-│   │   │   ├── static_ingest.py          # Static PDF ingestion ⚠️ (empty)
-│   │   │   ├── dynamic_ingest.py         # News/stock ingestion ⚠️ (empty)
-│   │   │   └── scheduler.py              # For periodic jobs (APScheduler) ⚠️ (empty)
+│   │   │   ├── __init__.py
+│   │   │   ├── chat_service.py
+│   │   │   ├── rag_service.py
+│   │   │   ├── ingestion_service.py
+│   │   │   ├── static_ingest.py
+│   │   │   ├── dynamic_ingest.py
+│   │   │   └── scheduler.py
 │   │   └── models/
+│   │       ├── __init__.py
 │   │       ├── pydantic/
-│   │       │   ├── chat.py               # Pydantic models for chat ✅
-│   │       │   ├── upload.py             # Pydantic models for upload ⚠️
-│   │       │   └── memory.py             # Redis memory models ✅
+│   │       │   ├── __init__.py
+│   │       │   ├── chat.py
+│   │       │   ├── memory.py
+│   │       │   └── upload.py
 │   │       ├── sqlalchemy/
-│   │       │   ├── chat.py               # SQLAlchemy models for chat ✅
-│   │       │   └── upload.py             # SQLAlchemy models for upload ⚠️
-│   │       └── __init__.py
+│   │       │   ├── __init__.py
+│   │       │   ├── chat.py
+│   │       │   └── upload.py
 │   │
 │   ├── database/
-│   │   ├── pg_connection.py              # PostgreSQL connection ✅
-│   │   └── redis_connection.py           # Redis connection ✅
-│   ├── tests/                            # Unit and integration tests ✅
 │   │   ├── __init__.py
-│   │   ├── conftest.py                   # Pytest configuration ✅
-│   │   ├── test_chat_endpoint.py         # Chat endpoint tests ✅
-│   │   ├── test_rag_integration.py       # RAG integration tests ✅
-│   │   ├── test_redis_memory.py          # Redis memory tests ✅
-│   │   ├── test_pydantic_chat.py         # Pydantic model tests ✅
-│   │   ├── test_pg_connection.py         # Database connection tests ✅
-│   │   └── test_main.py                  # Main app tests ✅
-│   ├── main.py                           # FastAPI entrypoint ✅
-│   └── config.py                         # Project configuration ⚠️ (empty)
+│   │   ├── pg_connection.py
+│   │   └── redis_connection.py
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── conftest.py
+│   │   ├── test_chat_endpoint.py
+│   │   ├── test_rag_integration.py
+│   │   ├── test_redis_memory.py
+│   │   ├── test_pydantic_chat.py
+│   │   ├── test_pg_connection.py
+│   │   ├── test_main.py
+│   │   ├── test_qdrant_client.py
+│   │   ├── test_upload_endpoint.py
+│   │   ├── test_embedding.py
+│   │   └── test_pdf_parser.py
+│   ├── main.py
+│   ├── config.py
+│   └── logs/
 │
-├── data/                                 # Uploaded PDFs, temp files, etc.
+├── data/
+│   ├── uploads/
+│   ├── test/
+│   │   └── test_01.pdf
+│   ├── default_knowledge_base/
+│   │   └── some_X.pdf
+│   │   └── ...
 │   └── md/
-│       └── FOLDER_STRUCTURE.md           # This file
-├── scripts/                              # CLI tools, one-off scripts
+│       ├── FOLDER_STRUCTURE.md
+│       ├── MEMORY_SYSTEM_DESIGN.md
+│       ├── PROJECT_PLAN.md
+│       └── TASKS.md
+├── scripts/
+│   ├── create_tables.py
+│   └── logs/
 ├── docker/
-│   ├── Dockerfile.api                    # API Dockerfile ✅
-│   ├── Dockerfile.ingest                 # Ingestion Dockerfile ⚠️
-│   └── docker-compose.yml                # Docker services ✅
-├── logs/                                 # Application logs
-├── .env.example                          # Environment variables template ✅
-├── pyproject.toml                        # Poetry dependencies ✅
-├── poetry.lock                           # Locked dependencies ✅
-├── Makefile                              # Build and test commands ✅
-├── README.md                             # Project documentation ✅
-└── .gitignore                            # Git ignore rules ✅
+│   ├── Dockerfile.api
+│   ├── Dockerfile.ingest
+│   └── docker-compose.yml
+├── logs/
+├── .env.example
+├── pyproject.toml
+├── poetry.lock
+├── Makefile
+├── README.md
+└── .gitignore
 ```
 
 Legend:
