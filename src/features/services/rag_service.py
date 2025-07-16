@@ -67,28 +67,22 @@ class RAGService:
     def _build_messages(self, user_message: str, context_data: Dict[str, Any]) -> List[Dict[str, str]]:
         """Build messages for OpenAI API with hybrid memory context."""
         messages = []
-        
         # System prompt
         system_prompt = self.config.get_system_prompt()
-        
-        # Combine short-term and long-term context
+        # Combine all context types
         context_parts = []
-        
         if context_data.get("short_term_context"):
             context_parts.append("=== RECENT CONVERSATION ===")
             context_parts.append(context_data["short_term_context"])
-        
         if context_data.get("long_term_context"):
             context_parts.append(context_data["long_term_context"])
-        
+        if context_data.get("pdf_context"):
+            context_parts.append(context_data["pdf_context"])
         if context_parts:
             system_prompt += f"\n\nMemory Context:\n{chr(10).join(context_parts)}"
-        
         messages.append({"role": "system", "content": system_prompt})
-        
         # User message
         messages.append({"role": "user", "content": user_message})
-        
         return messages
     
     def _should_add_to_long_term(self, user_message: str, response: str) -> bool:

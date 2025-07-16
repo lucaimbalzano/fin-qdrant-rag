@@ -19,6 +19,7 @@ class HybridMemoryManager:
     def __init__(self):
         self.redis_memory = RedisMemoryManager()
         self.qdrant_memory = QdrantMemoryClient.for_conversations()
+        self.pdf_memory = QdrantMemoryClient.for_pdfs()  # Add PDF/knowledge base Qdrant client
         self.openai_client = OpenAIClient()
         
         logger.info("Hybrid memory manager initialized")
@@ -131,41 +132,58 @@ class HybridMemoryManager:
         user_id: str, 
         short_term_limit: int = 5,
         long_term_limit: int = 3,
-        include_similar: bool = True
+        include_similar: bool = True,
+        pdf_limit: int = 3
     ) -> Dict[str, Any]:
         """
-        Get combined context from both short-term and long-term memory.
+        Get combined context from short-term, long-term, and PDF/document memory.
         
         Args:
             user_id (str): User identifier
             short_term_limit (int): Number of recent conversations to include
             long_term_limit (int): Number of similar memories to include
             include_similar (bool): Whether to include similar memories from long-term
-            
+            pdf_limit (int): Number of relevant PDF/document chunks to include
+        
         Returns:
-            Dict with combined context
+            Dict with combined context, including both formatted strings and raw memory lists:
+            {
+                "short_term_context": str,
+                "short_term_memories": list,
+                "long_term_context": str,
+                "long_term_memories": list,
+                "pdf_context": str,
+                "pdf_memories": list,
+                "short_term_count": int,
+                "long_term_count": int,
+                "pdf_count": int,
+                "similar_memories_count": int
+            }
         """
         try:
             # Get short-term context (Redis)
             short_term_context = await self.redis_memory.get_recent_context(user_id, short_term_limit)
-            
-            # Get long-term context (Qdrant)
+            short_term_memories = []
+            if short_term_context:
+                for line in short_term_context.split('\n'):
+                    if line.strip():
+                        short_term_memories.append({"text": line.strip()})
+
+            # Get long-term context (Qdrant conversations)
             long_term_memories = await self.qdrant_memory.get_user_memories(
                 user_id, limit=long_term_limit
             )
-            
+
             # If requested, also get similar memories based on current conversation
             similar_memories = []
+            recent_message = None
             if include_similar and short_term_context:
-                # Use the most recent user message to find similar memories
                 recent_context_lines = short_term_context.split('\n')
                 if recent_context_lines:
-                    # Extract the most recent user message
                     for line in reversed(recent_context_lines):
                         if line.startswith('[User:'):
                             recent_message = line.split('User: ', 1)[1] if 'User: ' in line else ""
                             if recent_message:
-                                # Get embedding for the recent message
                                 embeddings = await self.openai_client.get_embeddings([recent_message])
                                 similar_memories = await self.qdrant_memory.search_similar_memories(
                                     query_embedding=embeddings[0],
@@ -173,17 +191,39 @@ class HybridMemoryManager:
                                     limit=2
                                 )
                                 break
-            
-            # Combine all memories
+
+            # Combine all long-term memories
             all_long_term = long_term_memories + similar_memories
-            # Remove duplicates and sort by timestamp
             seen_ids = set()
             unique_long_term = []
             for memory in all_long_term:
                 if memory["id"] not in seen_ids:
                     seen_ids.add(memory["id"])
                     unique_long_term.append(memory)
-            
+
+            # PDF/document context retrieval (Qdrant knowledge base)
+            pdf_memories = []
+            pdf_context = ""
+            if recent_message:
+                pdf_embeddings = await self.openai_client.get_embeddings([recent_message])
+                pdf_memories = await self.pdf_memory.search_similar_memories(
+                    query_embedding=pdf_embeddings[0],
+                    user_id=None,  # PDFs are global, not user-specific
+                    limit=pdf_limit
+                )
+                if pdf_memories:
+                    pdf_context = "=== DOCUMENT KNOWLEDGE ===\n"
+                    for memory in pdf_memories:
+                        timestamp = memory.get("timestamp")
+                        if timestamp:
+                            try:
+                                ts_fmt = datetime.fromisoformat(timestamp).strftime("%Y-%m-%d %H:%M")
+                                pdf_context += f"[{ts_fmt}] {memory['content']}\n"
+                            except Exception:
+                                pdf_context += f"{memory['content']}\n"
+                        else:
+                            pdf_context += f"{memory['content']}\n"
+
             # Format long-term context
             long_term_context = ""
             if unique_long_term:
@@ -191,15 +231,19 @@ class HybridMemoryManager:
                 for memory in unique_long_term[:long_term_limit]:
                     timestamp = datetime.fromisoformat(memory["timestamp"]).strftime("%Y-%m-%d %H:%M")
                     long_term_context += f"[{timestamp}] {memory['content']}\n"
-            
+
             return {
                 "short_term_context": short_term_context,
+                "short_term_memories": short_term_memories,
                 "long_term_context": long_term_context,
-                "short_term_count": len(short_term_context.split('\n')) if short_term_context else 0,
+                "long_term_memories": unique_long_term,
+                "pdf_context": pdf_context,
+                "pdf_memories": pdf_memories,
+                "short_term_count": len(short_term_memories),
                 "long_term_count": len(unique_long_term),
+                "pdf_count": len(pdf_memories),
                 "similar_memories_count": len(similar_memories)
             }
-            
         except Exception as e:
             logger.error(f"Error getting context for user {user_id}: {e}")
             raise
