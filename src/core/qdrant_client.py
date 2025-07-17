@@ -273,8 +273,45 @@ class QdrantMemoryClient:
             logger.error(f"Error getting collection info: {e}")
             raise
     
+    async def get_all_points(self) -> list:
+        """
+        Retrieve all points (documents) from the collection, including their payloads and IDs.
+        Returns a list of objects with .id and .payload attributes.
+        """
+        await self._ensure_connected()
+        all_points = []
+        offset = None
+        while True:
+            result = await self.client.scroll(
+                collection_name=self.collection_name,
+                offset=offset,
+                with_payload=True,
+                with_vectors=False,
+                limit=1000
+            )
+            points, next_offset = result
+            all_points.extend(points)
+            if not next_offset:
+                break
+            offset = next_offset
+        return all_points
+    
     async def close(self):
         """Close Qdrant connection."""
         if self.client:
             await self.client.close()
             logger.info("Qdrant connection closed")
+
+    async def delete_points(self, point_ids: list) -> None:
+        """
+        Delete points from the collection by their IDs.
+        Args:
+            point_ids (list): List of point IDs to delete.
+        """
+        await self._ensure_connected()
+        if not point_ids:
+            return
+        await self.client.delete(
+            collection_name=self.collection_name,
+            points_selector=point_ids
+        )

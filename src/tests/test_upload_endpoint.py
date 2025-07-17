@@ -3,9 +3,58 @@ import os
 from fastapi.testclient import TestClient
 from src.main import app
 from unittest.mock import patch, AsyncMock
+import pytest
+import json
 
 TEST_PDF_PATH = 'data/test/test_01.pdf'
 UPLOAD_DIR = 'data/uploads'
+
+# Use the correct endpoint path based on router inclusion
+QDRANT_DOCS_PATH = "/qdrant/documents"  # Change to "/upload/qdrant/documents" if router is included with prefix
+
+def make_fake_points(ids):
+    class FakePoint:
+        def __init__(self, id, doc_id):
+            self.id = id
+            self.payload = {"metadata": {"document_id": doc_id}}
+    return [FakePoint(i, doc_id) for i, doc_id in enumerate(ids)]
+
+def test_get_all_documents_id():
+    from src.main import app
+    client = TestClient(app)
+    with patch('core.qdrant_client.QdrantMemoryClient.get_all_points', new_callable=AsyncMock) as mock_get_all_points, \
+         patch('core.qdrant_client.QdrantMemoryClient.connect', new_callable=AsyncMock):
+        # Simulate points with document_ids
+        mock_get_all_points.return_value = make_fake_points(["doc1", "doc2", "doc1"])
+        response = client.get(QDRANT_DOCS_PATH + "?collection_name=test_collection")
+        assert response.status_code == 200
+        data = response.json()
+        assert set(data["document_ids"]) == {"doc1", "doc2"}
+
+def test_clean_all_documents_id_array():
+    from src.main import app
+    client = TestClient(app)
+    with patch('core.qdrant_client.QdrantMemoryClient.get_all_points', new_callable=AsyncMock) as mock_get_all_points, \
+         patch('core.qdrant_client.QdrantMemoryClient.connect', new_callable=AsyncMock), \
+         patch('core.qdrant_client.QdrantMemoryClient.delete_points', new_callable=AsyncMock) as mock_delete_points:
+        # Simulate points with document_ids
+        points = make_fake_points(["doc1", "doc2", "doc3"])
+        points[0].id = 101
+        points[1].id = 102
+        points[2].id = 103
+        mock_get_all_points.return_value = points
+        mock_delete_points.return_value = None
+        payload = {"collection_name": "test_collection", "document_ids": ["doc1", "doc3"]}
+        response = client.request(
+            "DELETE",
+            QDRANT_DOCS_PATH,
+            data=json.dumps(payload),
+            headers={"Content-Type": "application/json"}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert set(data["deleted_point_ids"]) == {101, 103}
+        assert data["count"] == 2
 
 @patch('core.qdrant_client.QdrantMemoryClient.connect', new_callable=AsyncMock)
 @patch('core.qdrant_client.QdrantMemoryClient.create_collection', new_callable=AsyncMock)

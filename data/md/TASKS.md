@@ -24,7 +24,7 @@
 ## 3. RAG Pipeline (PDF Ingestion, TDD)
 - [X] Write test for PDF upload endpoint (/upload)
 - [X] Implement /upload endpoint to pass test
-- [ ] Write tests for PDF parsing and chunking (core/utils/parser.py)
+- [X] Write tests for PDF parsing and chunking (core/utils/parser.py)
 - [X] Implement parsing/chunking logic to pass tests
 - [X] Write tests for embedding with OpenAI (core/utils/embedding.py)
 - [X] Implement embedding logic to pass tests
@@ -33,11 +33,11 @@
 - [X] Refactor, document, and review code
 
 ## 4. RAG Chatbot (TDD)
-- [ ] Write test for /chat endpoint using Qdrant retrieval
-- [ ] Implement retrieval and prompt construction logic to pass tests
-- [ ] Write test for OpenAI final response integration
-- [ ] Implement OpenAI call to pass test
-- [ ] Refactor, document, and review code
+- [X] Write test for /chat endpoint using Qdrant retrieval
+- [X] Implement retrieval and prompt construction logic to pass tests
+- [X] Write test for OpenAI final response integration
+- [X] Implement OpenAI call to pass test
+- [X] Refactor, document, and review code
 
 ## 5. Dynamic Data Pipeline (TDD)
 - [ ] Write tests for news/stocks ingestion pipeline (features/services/dynamic_ingest.py)
@@ -49,17 +49,17 @@
 - [ ] Refactor, document, and review code
 
 ## 6. Dockerization & Environment (TDD)
-- [ ] Write Dockerfile for API & ingestion pipeline (test build/run)
-- [ ] Write docker-compose.yml for API, ingestion, Qdrant, PostgreSQL (test integration)
+- [X] Write Dockerfile for API & ingestion pipeline (test build/run)
+- [X] Write docker-compose.yml for API, ingestion, Qdrant, PostgreSQL (test integration)
 - [ ] Add tests for Dockerized setup (health checks, integration)
-- [ ] Add config.py for settings management (test config loading)
-- [ ] Refactor, document, and review code
+- [X] Add config.py for settings management (test config loading)
+- [x] Refactor, document, and review code
 
 ## 7. Engineering Best Practices
 - [ ] Enforce code style and linting (e.g., black, isort, flake8)
 - [ ] Set up pre-commit hooks
 - [ ] Add type hints and mypy checks
-- [ ] Write and maintain documentation (README, docstrings)
+- [X] Write and maintain documentation (README, docstrings)
 - [ ] Code review for all major features
 
 ## 8. Future Considerations (optional)

@@ -12,10 +12,10 @@ env-setup:
 
 # Docker commands
 up:
-	docker compose -f docker/docker-compose.yml up --build
+	docker compose --env-file .env -f docker/docker-compose.yml up --build
 
 up-detached:
-	docker compose -f docker/docker-compose.yml up -d --build
+	docker compose --env-file .env -f docker/docker-compose.yml up -d --build
 
 down:
 	docker compose -f docker/docker-compose.yml down
