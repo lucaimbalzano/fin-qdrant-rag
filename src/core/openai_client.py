@@ -15,8 +15,8 @@ class OpenAIClient:
             raise ValueError("OPENAI_API_KEY environment variable is required")
         
         self.client = AsyncOpenAI(api_key=self.api_key)
-        self.model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
-        self.embedding_model = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002")
+        self.model = os.getenv("OPENAI_MODEL", "gpt-4.1-2025-04-14")
+        self.embedding_model = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
         
         logger.info(f"OpenAI client initialized with model: {self.model}")
     

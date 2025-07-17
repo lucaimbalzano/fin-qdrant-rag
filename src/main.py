@@ -19,7 +19,8 @@ FASTAPI_HOST = os.getenv("FASTAPI_HOST", "0.0.0.0")
 FASTAPI_PORT = int(os.getenv("FASTAPI_PORT", "8000"))
 
 async def check_database_connection():
-    """Check PostgreSQL connection and create tables if needed."""
+    """Check PostgreSQL connection and create tables if needed. Create the database if it does not exist (for local dev)."""
+    from sqlalchemy.ext.asyncio import create_async_engine
     try:
         # Test database connection
         async with engine.connect() as conn:
@@ -40,6 +41,32 @@ async def check_database_connection():
                 logger.info("✅ Database tables created successfully")
         return True
     except Exception as e:
+        # If the error is 'database ... does not exist' and we're on localhost, try to create it
+        err_msg = str(e)
+        POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
+        POSTGRES_DB = os.getenv("POSTGRES_DB", "fqr_db")
+        POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
+        POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
+        POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+        if ("does not exist" in err_msg and POSTGRES_HOST in ["localhost", "127.0.0.1"]) or ("does not exist" in err_msg and POSTGRES_HOST == "0.0.0.0"):
+            logger.warning(f"Database {POSTGRES_DB} does not exist. Attempting to create it...")
+            try:
+                import asyncpg
+                conn = await asyncpg.connect(
+                    user=POSTGRES_USER,
+                    password=POSTGRES_PASSWORD,
+                    database="postgres",
+                    host=POSTGRES_HOST,
+                    port=POSTGRES_PORT
+                )
+                await conn.execute(f'CREATE DATABASE "{POSTGRES_DB}"')
+                await conn.close()
+                logger.info(f"✅ Database {POSTGRES_DB} created successfully.")
+            except Exception as ce:
+                logger.error(f"❌ Failed to create database {POSTGRES_DB}: {ce}")
+                return False
+            # Try again to connect to the new database
+            return await check_database_connection()
         logger.error(f"❌ Database connection failed: {e}")
         return False
 

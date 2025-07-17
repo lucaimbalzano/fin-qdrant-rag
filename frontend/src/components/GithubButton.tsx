@@ -47,7 +47,7 @@ const GitHubButton: React.FC = () => {
   return (
     <div className='flex justify-center'>
       <a
-        href='https://github.com/ui-layouts/uilayouts'
+        href='https://github.com/lucaimbalzano/fin-qdrant-rag'
         target='_blank'
         className='relative inline-block  sm:w-36 w-14 h-[2.7em] mx-auto group dark:bg-white bg-white dark:border-white border-white border-2 rounded-lg'
       >

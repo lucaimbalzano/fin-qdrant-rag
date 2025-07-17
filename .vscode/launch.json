@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {"name":"Python Debugger: Current File","type":"debugpy","request":"launch","program":"${file}","console":"integratedTerminal","env": {"PYTHONPATH": "src"}},
+        {
+            "name": "Python Debugger: FastAPI",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "src.main:app",
+                "--reload",
+                "--host", "0.0.0.0",
+                "--port", "8000"
+            ],
+            "jinja": true,
+            "env": {
+                "PYTHONPATH": "src"
+            },
+            "envFile": "${workspaceFolder}/.env.local"
+        },
+        {
+            "name": "Python: Pytest (make test)",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "program": "${workspaceFolder}/.venv/bin/python",
+            "args": [
+                "-m", "pytest", "src/tests", "-v"
+            ],
+            "env": {
+                "PYTHONPATH": "src"
+            }
+        },
+        {
+            "name": "Python: Pytest (test_chat_endpoint_dummy_response)",
+            "type": "python",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "program": "${workspaceFolder}/.venv/bin/python",
+            "args": [
+                "-m", "pytest", "src/tests/test_chat_endpoint.py::test_chat_endpoint_dummy_response", "-v"
+            ],
+            "env": {
+                "PYTHONPATH": "src"
+            }
+        }
+    ]
+}

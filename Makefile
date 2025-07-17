@@ -1,12 +1,14 @@
 # Makefile for fin-qdrant-rag
 
-.PHONY: up down test lint format setup env-setup up-detached run-local spacy-model
+# It prevents conflicts if a file with the same name
+.PHONY: up down test lint format setup env-setup up-detached run-local spacy-model setup
 
 # Setup commands
 setup:
 	uv venv --python 3.11
 	poetry install
 	make spacy-model
+	cp .env.example .env
 
 env-setup:
 	cp .env.example .env
@@ -28,12 +30,6 @@ run-local:
 # Testing and quality
 test:
 	PYTHONPATH=src pytest src/tests -v
-
-lint:
-	poetry run flake8 src
-
-format:
-	poetry run black src
 
 spacy-model:
 	poetry run python -m spacy download en_core_web_sm

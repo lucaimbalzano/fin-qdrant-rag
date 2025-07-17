@@ -50,7 +50,7 @@ async def upload_pdf(
         # 3. Get embeddings
         embeddings = get_embeddings(
             chunks,
-            model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002"),
+            model=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
             api_key=os.getenv("OPENAI_API_KEY")
         )
         if len(embeddings) != len(chunks):

@@ -9,8 +9,6 @@ Tecnologie usate:
 - Qdrant (come VectorDB per memorizzare embeddings)
 - OpenAI (API chat e embeddings)
 - Docker e Docker Compose
-- LangChain (per il routing dei prompt e gestione documenti)
-- PyMuPDF o pdfplumber per estrazione testo dai PDF
 
 Il file `.md` deve contenere:
 1. 📁 Struttura delle cartelle e file principali
@@ -36,9 +34,8 @@ This project follows a modular, event-driven architecture with two ingestion pip
 - **Input**: PDFs related to trading and finance.
 - **Steps**:
   1. Extract text using PyMuPDF or pdfplumber.
-  2. Chunk content using LangChain.
-  3. Embed each chunk using OpenAI Embedding API.
-  4. Store embeddings in Qdrant (Collection: `knowledge_base`).
+  2. Embed each chunk using OpenAI Embedding API.
+  3. Store embeddings in Qdrant (Collection: `knowledge_base`).
 - **Trigger**: API `/upload` or CLI tool.
 
 #### 📰 Pipeline B – Dynamic Feed (News, Stock Data)

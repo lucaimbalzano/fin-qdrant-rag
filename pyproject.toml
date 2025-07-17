@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fin-qdrant-rag"
 version = "0.1.0"
-description = "RAG system for finance/trading PDFs with FastAPI, Qdrant, OpenAI, and LangChain."
+description = "RAG system for finance/trading PDFs with FastAPI, Qdrant, OpenAI"
 authors = ["Lucas <lucaimbalzano@gmail.com>"]
 readme = "README.md"
 packages = [
@@ -14,7 +14,6 @@ fastapi = "^0.110.0"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
 qdrant-client = "^1.7.0"
 openai = "^1.14.3"
-langchain = "^0.3.26"
 pymupdf = "^1.23.22"
 pdfplumber = "^0.10.3"
 apscheduler = "^3.10.4"
@@ -26,6 +25,7 @@ redis = "^5.0.1"
 python-multipart = "^0.0.20"
 pypdf2 = "^3.0.1"
 spacy = "^3.8.7"
+sqlalchemy = "^2.0.41"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
