@@ -133,7 +133,7 @@ class HybridMemoryManager:
         short_term_limit: int = 5,
         long_term_limit: int = 3,
         include_similar: bool = True,
-        pdf_limit: int = 3
+        pdf_limit: int = 5
     ) -> Dict[str, Any]:
         """
         Get combined context from short-term, long-term, and PDF/document memory.

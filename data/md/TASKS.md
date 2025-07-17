@@ -51,7 +51,7 @@
 ## 6. Dockerization & Environment (TDD)
 - [X] Write Dockerfile for API & ingestion pipeline (test build/run)
 - [X] Write docker-compose.yml for API, ingestion, Qdrant, PostgreSQL (test integration)
-- [ ] Add tests for Dockerized setup (health checks, integration)
+- [X] Add tests for Dockerized setup (health checks, integration)
 - [X] Add config.py for settings management (test config loading)
 - [x] Refactor, document, and review code
 
@@ -63,10 +63,11 @@
 - [ ] Code review for all major features
 
 ## 8. Future Considerations (optional)
-- [ ] Add chat UI (optional)
+- [X] Add chat UI (optional)
 - [ ] Add CI & CD on AWS
 - [ ] Add authentication (optional)
 - [ ] Add batch management (optional)
+
 
 ---
 
