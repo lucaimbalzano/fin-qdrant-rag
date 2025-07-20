@@ -34,7 +34,7 @@ class RAGService:
             user_id = user_id or "default_user"
             
             # Get combined context from both short-term and long-term memory
-            context_data = await self.hybrid_memory.get_context_for_user(user_id)
+            context_data = await self.hybrid_memory.get_context_for_user(user_id=user_id, current_user_message=user_message)
             
             # Build messages for OpenAI with combined context
             messages = self._build_messages(user_message, context_data)
@@ -153,10 +153,6 @@ class RAGService:
         """Clear memory for a specific user."""
         result = await self.hybrid_memory.clear_user_memory(user_id)
         logger.info(f"Cleared memory for user {user_id}: {result}")
-    
-    async def get_user_context(self, user_id: str, limit: int = 5) -> Dict[str, Any]:
-        """Get combined context for a user."""
-        return await self.hybrid_memory.get_context_for_user(user_id)
     
     async def search_memories(self, query: str, user_id: str = None, limit: int = 5) -> List[Dict[str, Any]]:
         """Search for memories using semantic similarity."""

@@ -106,3 +106,43 @@ async def test_config_loading():
     openai_settings = config.get_openai_settings()
     assert "model" in openai_settings
     assert "temperature" in openai_settings 
+
+@pytest.mark.asyncio
+async def test_extract_keywords():
+    from core.openai_client import OpenAIClient
+    client = OpenAIClient()
+    # Patch get_chat_completion to return a fake keyword list
+    client.get_chat_completion = AsyncMock(return_value="finance, investing, risk")
+    keywords = await client.extract_keywords("Tell me about finance and investing risk.", n=3)
+    assert keywords == ["finance", "investing", "risk"]
+
+@pytest.mark.asyncio
+async def test_rerank_chunks_with_threshold():
+    from core.openai_client import OpenAIClient
+    client = OpenAIClient()
+    # Patch get_chat_completion to return a fake JSON score list
+    client.get_chat_completion = AsyncMock(return_value='[{"index": 1, "score": 0.8}, {"index": 2, "score": 0.3}]')
+    chunks = [
+        {"content": "Relevant chunk."},
+        {"content": "Irrelevant chunk."}
+    ]
+    reranked = await client.rerank_chunks_with_threshold("Tell me about finance.", chunks, threshold=0.5)
+    assert len(reranked) == 1
+    assert reranked[0]["content"] == "Relevant chunk."
+
+@pytest.mark.asyncio
+async def test_amplify_pdf_context_fallback_and_rerank():
+    from core.hybrid_memory_manager import HybridMemoryManager
+    from core.openai_client import OpenAIClient
+    manager = HybridMemoryManager()
+    # Patch openai_client methods
+    manager.openai_client.generate_sub_questions = AsyncMock(return_value=["What is finance?"])
+    manager.openai_client.get_embeddings = AsyncMock(return_value=[[0.1, 0.2, 0.3]])
+    # Simulate no results for sub-question, but results for keywords
+    manager.pdf_memory = AsyncMock()
+    manager.pdf_memory.search_similar_memories = AsyncMock(side_effect=[[], [{"id": "1", "content": "Finance PDF chunk."}]])
+    manager.openai_client.extract_keywords = AsyncMock(return_value=["finance"])
+    manager.openai_client.rerank_chunks_with_threshold = AsyncMock(return_value=[{"id": "1", "content": "Finance PDF chunk."}])
+    results = await manager.amplify_pdf_context("Tell me about finance.", pdf_limit=2, rerank_threshold=0.5)
+    assert len(results) == 1
+    assert results[0]["content"] == "Finance PDF chunk." 
