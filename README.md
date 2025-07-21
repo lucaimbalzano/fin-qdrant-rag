@@ -16,8 +16,7 @@
 
 ## 💠 System Design
 <p align="center">
-  <img src="frontend/public/fin_rag_qdrant-chat-design.png
-" alt="Finance Assistant Preview" width="700" height="600">
+  <img src="frontend/public/fin_rag_qdrant-chat-design.png" alt="Finance Assistant Preview" width="700" height="600">
 </p>
 
 
