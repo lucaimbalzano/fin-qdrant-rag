@@ -4,7 +4,7 @@ from typing import List, Optional
 
 def get_embeddings(
     texts: List[str],
-    model: str = "text-embedding-ada-002",
+    model: str = "text-embedding-3-small",
     api_key: Optional[str] = None,
     batch_size: int = 16
 ) -> List[List[float]]:

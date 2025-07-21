@@ -61,6 +61,7 @@
 - [ ] Add type hints and mypy checks
 - [X] Write and maintain documentation (README, docstrings)
 - [ ] Code review for all major features
+- [ ] Semantic Deduplication
 
 ## 8. Future Considerations (optional)
 - [X] Add chat UI (optional)

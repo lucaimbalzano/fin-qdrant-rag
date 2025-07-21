@@ -23,8 +23,6 @@ Memory Architecture Pattern: Hybrid Memory System
 Strategy Pattern - Different memory strategies
 Repository Pattern - Abstract memory storage
 Factory Pattern - Memory item creation
-Observer Pattern - Memory importance detection
-Chain of Responsibility - Memory processing pipeline
 """
 
 class MemoryStrategy(ABC):

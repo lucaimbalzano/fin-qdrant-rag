@@ -5,6 +5,8 @@
 
 # Setup commands
 setup:
+	chmod +x scripts/check_setup.sh
+	./scripts/check_setup.sh
 	uv venv --python 3.11
 	poetry install
 	make spacy-model

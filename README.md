@@ -13,9 +13,18 @@
 
 ---
 
+
+## 💠 System Design
+<p align="center">
+  <img src="frontend/public/fin_rag_qdrant-chat-design.png
+" alt="Finance Assistant Preview" width="700" height="600">
+</p>
+
+
 ## 📖 Project Overview
 
 fin-qdrant-rag is a modular, production-ready backend for building Retrieval-Augmented Generation (RAG) chatbots over finance/trading documents. It ingests PDFs, indexes them with Qdrant, and enables natural language Q&A via OpenAI's LLMs.
+(Main problem of this system design is that add complexity on horizontal scaling)
 
 <p align="center">
   <img src="frontend/public/FinanceAssistantPreview.jpeg" alt="Finance Assistant Preview" width="700" height="600">
